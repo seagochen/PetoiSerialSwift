@@ -15,6 +15,7 @@
 		55D245692609A60B00EE5FE6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 55D245672609A60B00EE5FE6 /* LaunchScreen.storyboard */; };
 		55D245742609A60B00EE5FE6 /* PetoiSerialSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D245732609A60B00EE5FE6 /* PetoiSerialSwiftTests.swift */; };
 		55D2457F2609A60B00EE5FE6 /* PetoiSerialSwiftUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D2457E2609A60B00EE5FE6 /* PetoiSerialSwiftUITests.swift */; };
+		55D245902609A66100EE5FE6 /* BluetoothLowEnergyHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D2458F2609A66100EE5FE6 /* BluetoothLowEnergyHandler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		55D2457A2609A60B00EE5FE6 /* PetoiSerialSwiftUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PetoiSerialSwiftUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		55D2457E2609A60B00EE5FE6 /* PetoiSerialSwiftUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PetoiSerialSwiftUITests.swift; sourceTree = "<group>"; };
 		55D245802609A60B00EE5FE6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		55D2458F2609A66100EE5FE6 /* BluetoothLowEnergyHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothLowEnergyHandler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +108,7 @@
 				55D245652609A60B00EE5FE6 /* Assets.xcassets */,
 				55D245672609A60B00EE5FE6 /* LaunchScreen.storyboard */,
 				55D2456A2609A60B00EE5FE6 /* Info.plist */,
+				55D2458F2609A66100EE5FE6 /* BluetoothLowEnergyHandler.swift */,
 			);
 			path = PetoiSerialSwift;
 			sourceTree = "<group>";
@@ -260,6 +263,7 @@
 			files = (
 				55D245612609A60A00EE5FE6 /* ViewController.swift in Sources */,
 				55D2455D2609A60A00EE5FE6 /* AppDelegate.swift in Sources */,
+				55D245902609A66100EE5FE6 /* BluetoothLowEnergyHandler.swift in Sources */,
 				55D2455F2609A60A00EE5FE6 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
