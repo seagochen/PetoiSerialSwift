@@ -18,8 +18,7 @@ class ViewController: UIViewController {
         // 初始化蓝牙
         bluetooth = BluetoothLowEnergy()
         
-        // 搜索蓝牙
-        bluetooth.startScanPeripheral(serviceUUIDS: nil, options: nil)
+   
     }
     
     @IBAction func stopBluetoothScanPressed(_ sender: Any) {
@@ -37,5 +36,12 @@ class ViewController: UIViewController {
         }
     }
     
+    @IBAction func startBluetoothScanPressed(_ sender: Any) {
+        
+        NSLog("startBluetoothScanPressed")
+        
+        // 搜索蓝牙
+        bluetooth.startScanPeripheral(serviceUUIDS: nil, options: nil)
+    }
     
 }

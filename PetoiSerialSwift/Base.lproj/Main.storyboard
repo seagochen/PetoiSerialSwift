@@ -24,6 +24,14 @@
                                     <action selector="stopBluetoothScanPressed:" destination="BYZ-38-t0r" eventType="touchDown" id="AxF-kH-bu3"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="i6V-QD-WYU">
+                                <rect key="frame" x="123" y="397" width="169" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Start scanning bluetooth"/>
+                                <connections>
+                                    <action selector="startBluetoothScanPressed:" destination="BYZ-38-t0r" eventType="touchDown" id="ez8-oF-e9P"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>

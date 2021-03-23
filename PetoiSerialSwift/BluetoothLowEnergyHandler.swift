@@ -149,6 +149,22 @@ extension BluetoothLowEnergy: CBCentralManagerDelegate {
         }
     }
     
+//    centralManager.discoverPeripheral = { (peripheral, peripherals) in
+    // peripheral 当前发现的外设
+    // peripherals 当前已发现的外设
+//    }
+    
+    func centralManager(_ central: CBCentralManager, didUpdateANCSAuthorizationFor peripheral: CBPeripheral) {
+        NSLog("\(#function): didUpdateANCSAuthorizationFor")
+    }
+    
+    func centralManager(_ central: CBCentralManager, willRestoreState dict: [String : Any]) {
+        NSLog("\(#function): willRestoreState")
+    }
+    
+    func centralManager(_ central: CBCentralManager, connectionEventDidOccur event: CBConnectionEvent, for peripheral: CBPeripheral) {
+        NSLog("\(#function): willRestoreState")
+    }
     
     // 开始扫描之后会扫描到蓝牙设备，扫描到之后走到这个代理方法
     // MARK: 中心管理器扫描到了设备
