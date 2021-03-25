@@ -24,7 +24,7 @@ class ViewController: UIViewController {
     var rxdChar: CBCharacteristic?
     
     // 使用定时器，按照固定的频率刷新数据
-    let millisecond = 10
+    let millisecond = 100
     
     // 定时器
     var timer : Timer?
