@@ -127,13 +127,40 @@
 };
 
 
-- (NSData*)getBuffer {
+- (NSData*)getBuffer
+{
     return [Converter cvtCBytesToData:self.buffer length:self.header];
 };
 
 
-- (NSInteger)getBufferSize {
+- (NSInteger)getBufferSize
+{
     return self.capacity;
+};
+
+
+- (NSInteger)nextTokenStartPos
+{
+    NSInteger backslash_r = 13; // \r
+    NSInteger backslash_n = 10; // \n
+    
+    for (NSInteger i = 0; i < self.header - 1; i++) { // to avoid out of range
+        if (self.buffer[i] == backslash_r &&
+            self.buffer[i+1] == backslash_n) {
+            return i + 2;
+        }
+    }
+    
+    return -1;
+}
+
+- (void)overallMove: (NSInteger)offset
+{
+    for (NSInteger i = 0; i < self.header - offset; i++) {
+        self.buffer[i] = self.buffer[offset + i];
+    }
+    
+    self.header -= offset;
 };
 
 
@@ -142,7 +169,34 @@
     // 将数据写入缓冲
     [self writeToBuffer:data];
     
+    // 持续扫描，直到返回的数值为 -1
+    while (true) {
+        // 从数据中抓取token结尾，这里的结尾定义默认为\r\n
+        NSInteger tailer = [self nextTokenStartPos];
+        
+        if (tailer == -1) break;
+        
+        // 找到了完整的数据位，将数据从buffer中拷贝出来
+        NSData* token = [Converter cvtCBytesToData:self.buffer length:tailer];
+        
+        // 把数据写入MutableArray
+        [self.tokens addObject:token];
+        
+        // 然后将buffer中的剩余数据拷贝到0号位
+        [self overallMove:tailer];
+    }
+};
+
+
+- (NSData*)tryGetToken
+{
+    if ([self.tokens count] > 0) {
+        NSData* data = [self.tokens objectAtIndex: 0];
+        [self.tokens removeObjectAtIndex: 0];
+        return data;
+    }
     
+    return nil;
 };
 
 @end

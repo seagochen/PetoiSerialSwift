@@ -26,6 +26,8 @@
 
 - (NSInteger)getRestSize;
 
+- (NSData*)tryGetToken;
+
 @end
 
 
