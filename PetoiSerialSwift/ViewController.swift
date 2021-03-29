@@ -7,9 +7,11 @@
 
 import UIKit
 import CoreBluetooth
+import ActionSheetPicker
+import HexColors
+import RMessage
 
-
-class ViewController: UIViewController {
+class ViewController: UIViewController  {
     
     // 蓝牙设备管理类
     var bluetooth: BluetoothLowEnergy!
@@ -26,10 +28,27 @@ class ViewController: UIViewController {
     // 接收和发送蓝牙数据
     var bleMsgHandler: BLEMessageDetector?
     
+    // 设置蓝牙搜索的pickerview
+    var devices: [String]!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // 对控件进行调整
+        initWidgets()
+        
+        // 对工具进行初始化
+        initUtilities()
+    }
+    
+    
+    func initWidgets() {
+        // todo
+    }
+    
 
+    func initUtilities() {
         // 初始化蓝牙
         bluetooth = BluetoothLowEnergy()
         
@@ -37,84 +56,50 @@ class ViewController: UIViewController {
         bleMsgHandler = BLEMessageDetector()
     }
     
-    @objc func recv() {
-        let data = bluetooth.recvData()
-
-        if data.count > 0 {
-            if let feedback = String(data: data, encoding: .utf8) {
-                print(feedback)
-            }
-        }
-    }
     
-    @IBAction func searchBluetoothPeripherals(_ sender: UIButton) {
+    @IBAction func searchBtnPressed(_ sender: UIButton) {
         
-        if sender.currentTitle == "Search BLE devices" {
-            // 搜索蓝牙
+        switch sender.currentTitle {
+        case "Search":
+            // 开始搜索可用设备
             bluetooth.startScanPeripheral(serviceUUIDS: nil, options: nil)
             
-            // 修改名称
-            sender.setTitle("Stop searching", for: .normal)
-        } else if sender.currentTitle == "Stop searching" {
+            // 清空列表，避免出现异常
+            devices = []
             
+            // 修改文字
+            sender.setTitle("Stop", for: .normal)
+
+        case "Stop":
             // 停止搜索
             bluetooth.stopScanPeripheral()
+
+            // 把可用设备写入列表中
+            let peripherals = bluetooth.getPeripheralList()
+            if !peripherals.isEmpty {
+                for device in peripherals {
+                    if let name = device.name {
+                        devices.append(name)
+                    }
+                }
+            }
             
-            // 修改名称
-            sender.setTitle("Search BLE devices", for: .normal)
+            // 修改文字
+            sender.setTitle("Search", for: .normal)
+            
+            // 弹出提示信息
+            if devices.count <= 0 {
+                RMessage.showNotification(withTitle: "蓝牙设备搜索失败", subtitle: "未能找到可用的蓝牙设备，请重新尝试!", type: .error, customTypeName: nil, duration: 3, callback: nil)
+            } else {
+                RMessage.showNotification(withTitle: "找到了可用的设备", subtitle: "找到了\(devices.count)台可用设备", type: .success, customTypeName: nil, duration: 3, callback: nil)
+            }
+            
+        default:
+            break
         }
+   
     }
     
-    
-    @IBAction func connectBluetoothPeripherals(_ sender: Any) {
-        
-        // 启动后台定时器
-        bleMsgHandler?.startListen(target: self, selector: #selector(recv))
-        
-//        // connect to some centain device
-//        let deviceList = bluetooth.getPeripheralList()
-//        if !deviceList.isEmpty {
-//            for device in deviceList {
-//
-//                print("found device: \(device.name ?? "")")
-//
-//                // 找到需要的设备
-//                // TODO
-//                if device.name == "JDY-23A-BLE" {
-//                    bluetooth.connect(peripheral: device)
-//
-//                    // 记录需要的设备
-//                    peripheral = device
-//                }
-//            }
-//        }
-//
-//
-//        // 获取需要的信道
-//        guard let peripheral = peripheral else {
-//            print("peripheral is null")
-//            return
-//        }
-//
-//        if bluetooth.isConnected(peripheral: peripheral) {
-//            let characteristics = bluetooth.getCharacteristic()
-//            if characteristics.count >= 2 {
-//
-//                rxdChar = characteristics[0]
-//                txdChar = characteristics[1]
-//
-//                // 设置接收数据
-//                guard let rxdChar = rxdChar else {
-//                    print("rxdChar is null")
-//                    return
-//                }
-//
-//                bluetooth.setNotifyCharacteristic(peripheral: peripheral, notify: rxdChar)
-//
-//
-//            }
-//        }
-        
-    }
-    
+  
+
 }
