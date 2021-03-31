@@ -174,7 +174,7 @@ class ViewController: UIViewController  {
             bluetooth.disconnect(peripheral: peripheral!)
             
             // 修改按钮文字
-            bleSearchBtn.setTitle("Search", for: .normal)
+            connectBtn.setTitle("Connect", for: .normal)
 
             // 关闭功能按钮
             disableAllFuncBtns()
@@ -223,14 +223,7 @@ class ViewController: UIViewController  {
             RMessage.showNotification(withTitle: "蓝牙设备列表为空", subtitle: "未能可用的设备列表，请先完成搜索过程后再尝试!", type: .normal, customTypeName: nil, duration: 3, callback: nil)
         }
     }
-
-
-    // MARK: 校准
-    @IBAction func calibrationPressed(_ sender: UIButton) {
-        outputString = ""
-        
-        bluetooth.sendData(data: Converter.cvtString(toData: "c"), peripheral: peripheral!, characteristic: txdChar!)
-    }
+    
     
     // MARK: 休息
     @IBAction func restPressed(_ sender: UIButton) {
@@ -331,7 +324,7 @@ class ViewController: UIViewController  {
                 RMessage.showNotification(withTitle: "蓝牙连结成功", subtitle: "已连结到设备\(String(describing: self.peripheral!.name!))，开始监听消息中...", type: .success, customTypeName: nil, duration: 3, callback: nil)
                 
                 // 修改按钮信息
-                self.bleSearchBtn.setTitle("Disconnect", for: .normal)
+                self.connectBtn.setTitle("Disconnect", for: .normal)
                 self.enableConnectBtn()
 
                 // 允许用户使用全部的按钮
