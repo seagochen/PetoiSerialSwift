@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		4E70C70DD97C42E78D3A1271 /* Pods_PetoiSerialSwift_PetoiSerialSwiftUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 98BAB4012AF2E91F265DE1A0 /* Pods_PetoiSerialSwift_PetoiSerialSwiftUITests.framework */; };
 		550FE813261192A300E81E5A /* BLEMessageDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550FE812261192A300E81E5A /* BLEMessageDetector.swift */; };
+		5510BB85261423B5000FE472 /* ColorConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5510BB84261423B5000FE472 /* ColorConverter.swift */; };
 		559C1376260B53C800BD588E /* Converter.m in Sources */ = {isa = PBXBuildFile; fileRef = 559C1375260B53C800BD588E /* Converter.m */; };
 		55CCA9A6260F1769002BCABD /* DataBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 55CCA9A5260F1769002BCABD /* DataBuffer.m */; };
 		55D2455D2609A60A00EE5FE6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D2455C2609A60A00EE5FE6 /* AppDelegate.swift */; };
@@ -47,6 +48,7 @@
 		201C351B5D041618AE6DD58E /* Pods-PetoiSerialSwift-PetoiSerialSwiftUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PetoiSerialSwift-PetoiSerialSwiftUITests.debug.xcconfig"; path = "Target Support Files/Pods-PetoiSerialSwift-PetoiSerialSwiftUITests/Pods-PetoiSerialSwift-PetoiSerialSwiftUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		2F2FBC426183199629D7CDE1 /* Pods_PetoiSerialSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PetoiSerialSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		550FE812261192A300E81E5A /* BLEMessageDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BLEMessageDetector.swift; sourceTree = "<group>"; };
+		5510BB84261423B5000FE472 /* ColorConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorConverter.swift; sourceTree = "<group>"; };
 		559C1374260B53C800BD588E /* PetoiSerialSwift-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PetoiSerialSwift-Bridging-Header.h"; sourceTree = "<group>"; };
 		559C1375260B53C800BD588E /* Converter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Converter.m; sourceTree = "<group>"; };
 		559C137A260B53DA00BD588E /* Converter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Converter.h; sourceTree = "<group>"; };
@@ -137,6 +139,7 @@
 				55CCA9A5260F1769002BCABD /* DataBuffer.m */,
 				559C137A260B53DA00BD588E /* Converter.h */,
 				559C1375260B53C800BD588E /* Converter.m */,
+				5510BB84261423B5000FE472 /* ColorConverter.swift */,
 				55D2455C2609A60A00EE5FE6 /* AppDelegate.swift */,
 				55D2455E2609A60A00EE5FE6 /* SceneDelegate.swift */,
 				55D245602609A60A00EE5FE6 /* ViewController.swift */,
@@ -433,6 +436,7 @@
 			files = (
 				55D518F12611A82F0011BF4F /* Phone11Layout.swift in Sources */,
 				559C1376260B53C800BD588E /* Converter.m in Sources */,
+				5510BB85261423B5000FE472 /* ColorConverter.swift in Sources */,
 				55D519002611CC0D0011BF4F /* WidgetTools.swift in Sources */,
 				55D245612609A60A00EE5FE6 /* ViewController.swift in Sources */,
 				55D2455D2609A60A00EE5FE6 /* AppDelegate.swift in Sources */,

@@ -34,4 +34,12 @@ class WidgetTools
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 5
     }
+    
+    static func roundCorner(textView: UITextView, boardColor: UIColor)
+    {
+        textView.layer.borderColor = ColorConverter.convert(color: boardColor)
+        textView.layer.borderWidth = 1.0
+        textView.layer.cornerRadius = 5
+        textView.layer.masksToBounds = true
+    }
 }

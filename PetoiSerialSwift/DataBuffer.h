@@ -36,8 +36,7 @@
 // MARK: 尝试从缓存中读取可用的数据
 - (NSData*)tryGetToken;
 
-// MARK: 测试使用，把bytes打印成数值的方法
-+ (void)print: (NSData*)data;
+
 
 @end
 

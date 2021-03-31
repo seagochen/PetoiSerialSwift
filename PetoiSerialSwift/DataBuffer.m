@@ -241,22 +241,4 @@
     return nil;
 };
 
-
-+ (void)print: (NSData*)data
-{
-    if ([data length] > 0) {
-        NSInteger len = 0;
-        unsigned char* buf = [Converter cvtDataToCBytes:data length:&len];
-        
-        for (int i = 0; i < len; i++) {
-            if (buf[i] >= 32 && buf[i] < 127) {
-                printf("%c ", buf[i]);
-            } else {
-                printf("%d ", buf[i]);
-            }
-        }
-        printf("\n");
-    }
-};
-
 @end

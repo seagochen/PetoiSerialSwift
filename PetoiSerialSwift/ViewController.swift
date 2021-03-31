@@ -36,12 +36,13 @@ class ViewController: UIViewController  {
     
     // iOS 控件
     @IBOutlet weak var bleSearchBtn: UIButton!
-    @IBOutlet weak var bleDevicesText: UITextField!
-    @IBOutlet weak var unfoldBtn: UIButton!
     @IBOutlet weak var calibrationBtn: UIButton!
     @IBOutlet weak var restBtn: UIButton!
     @IBOutlet weak var gyroscopeBtn: UIButton!
     @IBOutlet weak var outputTextView: UITextView!
+    @IBOutlet weak var selectedDeviceLabel: UILabel!
+    @IBOutlet weak var connectBtn: UIButton!
+    
     
     
     override func viewDidLoad() {
@@ -58,34 +59,32 @@ class ViewController: UIViewController  {
     // MARK: 对面板控件进行初始化的函数
     func initWidgets() {
         /**
-         * 修改文本框样式
+         * 标签风格
          */
-        // 把文本框改成下划线的形式
-        WidgetTools.underline(textfield: bleDevicesText, color: bleSearchBtn.backgroundColor!)
-        // 修改文本框内容
-        bleDevicesText.text = "Device: None"
-        // 设置文本框委托模式
-        bleDevicesText.delegate = self
-        
+        // 下划线的形式
+        WidgetTools.underline(label: selectedDeviceLabel)
+        // 修改标签内容
+        selectedDeviceLabel.text = "Device: None"
+       
+      
         /**
-         * 设置设备展开菜单按钮
+         * 按钮
          */
-        // 删除可能出现的文字
-        unfoldBtn.setTitle("", for: .normal)
-        
         // 给按钮设置为圆角矩形
         WidgetTools.roundCorner(button: bleSearchBtn)
         WidgetTools.roundCorner(button: calibrationBtn)
         WidgetTools.roundCorner(button: restBtn)
         WidgetTools.roundCorner(button: gyroscopeBtn)
+        WidgetTools.roundCorner(button: connectBtn)
         
         disableAllFuncBtns()
         
         
         /**
-         * 修改输出文本框内容
+         * 输出文本框
          */
         outputTextView.text = "Output:\n\t"
+        WidgetTools.roundCorner(textView: outputTextView, boardColor: bleSearchBtn.backgroundColor!)
     }
 
 
@@ -218,7 +217,7 @@ class ViewController: UIViewController  {
                 
                 // 显示选择的内容
                 let stringVar = String(describing: values!)
-                self.bleDevicesText.text = "Device: " + String(describing: stringVar)
+//                self.bleDevicesText.text = "Device: " + String(describing: stringVar)
 
                 // 设置蓝牙连结
                 if self.connectBLEDevice(index: indexes) {
