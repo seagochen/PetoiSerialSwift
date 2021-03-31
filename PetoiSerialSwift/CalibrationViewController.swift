@@ -20,8 +20,8 @@ class CalibrationViewController: UIViewController {
         
     }
     
-    @IBAction func close(segue: UIStoryboardSegue) {
-        print("hello world")
+    @IBAction func exitBtnPressed(_ sender: UIButton) {
+        self.dismiss(animated: true, completion: nil)
     }
     
 }

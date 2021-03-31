@@ -272,7 +272,17 @@ class MainViewController: UIViewController  {
         
         bluetooth.sendData(data: Converter.cvtString(toData: "g"), peripheral: peripheral!, characteristic: txdChar!)
     }
-
+    
+    
+    
+    @IBAction func showBtnPressed(_ sender: Any) {
+        
+        let vc = self.storyboard?.instantiateViewController(identifier: "CalibrationVC") as! CalibrationViewController
+        
+        self.navigationController?.pushViewController(vc, animated: true)
+        self.present(vc, animated: true, completion: nil)
+    }
+    
 
     @objc func searchBLEDevices() {
         sleep(1)
