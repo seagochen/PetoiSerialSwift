@@ -193,7 +193,7 @@
                     <connections>
                         <outlet property="OKBtn" destination="EmB-iW-8fK" id="ofW-yf-JEO"/>
                         <outlet property="clearBtn" destination="oR9-yy-abZ" id="w37-On-zBj"/>
-                        <outlet property="outputTextview" destination="sak-lZ-6p7" id="ZtL-Pi-hZh"/>
+                        <outlet property="outputTextView" destination="sak-lZ-6p7" id="ZtL-Pi-hZh"/>
                         <outlet property="saveBtn" destination="p2Q-kr-F0Z" id="eiE-gf-Qrk"/>
                         <outlet property="servoBtn" destination="4O4-iQ-y1f" id="1kk-NY-GIM"/>
                         <outlet property="servoLabel" destination="eB1-QP-wvd" id="Pjh-VQ-fRy"/>

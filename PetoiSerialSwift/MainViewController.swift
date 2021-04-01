@@ -53,7 +53,7 @@ class MainViewController: UIViewController  {
     }
     
 
-    // MARK：对蓝牙等设备初始化
+    // MARK: 对蓝牙等设备初始化
     func loadBleInformation() {
         
         // 从AppDelegate获取存放在全局的蓝牙等外设信息
@@ -65,17 +65,33 @@ class MainViewController: UIViewController  {
         rxdChar = delegate.rxdChar
         bleMsgHandler = delegate.bleMsgHandler
         devices = delegate.devices
+        
+        // 是否有在处理蓝牙消息
+        if let handler = bleMsgHandler {
+            if !handler.isRunning() { // 没有运行
+                handler.startListen(target: self, selector: #selector(self.recv))
+            }
+        }
     }
     
-    
+    // MARK: 存储蓝牙设备信息
     func saveBleInformation() {
+        
+        // 准备把蓝牙外设的信息存入到AppDelegate里
         let delegate = UIApplication.shared.delegate as! AppDelegate
+        
         delegate.bluetooth = bluetooth
         delegate.peripheral = peripheral
         delegate.txdChar = txdChar
         delegate.rxdChar = rxdChar
         delegate.bleMsgHandler = bleMsgHandler
         delegate.devices = devices
+        
+        if let handler = bleMsgHandler {
+            if handler.isRunning() { // 暂停对蓝牙消息的处理
+                bleMsgHandler?.stopListen()
+            }
+        }
     }
     
     
@@ -100,7 +116,7 @@ class MainViewController: UIViewController  {
         WidgetTools.roundCorner(button: gyroscopeBtn)
         WidgetTools.roundCorner(button: connectBtn)
 
-        disableConnectBtn()
+        WidgetTools.disable(button: connectBtn)
         disableAllFuncBtns()
         
         
@@ -110,41 +126,19 @@ class MainViewController: UIViewController  {
         outputTextView.text = "Output:\n\t"
         WidgetTools.roundCorner(textView: outputTextView, boardColor: bleSearchBtn.backgroundColor!)
     }
-    
-
-    func disableConnectBtn() {
-        connectBtn.isEnabled = false
-        connectBtn.alpha = 0.4
-    }
-
-    
-    func enableConnectBtn() {
-        connectBtn.isEnabled = true
-        connectBtn.alpha = 1
-    }
 
 
     func disableAllFuncBtns() {
-        calibrationBtn.alpha = 0.4
-        calibrationBtn.isEnabled = false
-        
-        restBtn.alpha = 0.4
-        restBtn.isEnabled = false
-        
-        gyroscopeBtn.alpha = 0.4
-        gyroscopeBtn.isEnabled = false
+        WidgetTools.disable(button: calibrationBtn)
+        WidgetTools.disable(button: restBtn)
+        WidgetTools.disable(button: gyroscopeBtn)
     }
     
 
     func enableAllFuncBtns() {
-        calibrationBtn.alpha = 1
-        calibrationBtn.isEnabled = true
-        
-        restBtn.alpha = 1
-        restBtn.isEnabled = true
-        
-        gyroscopeBtn.alpha = 1
-        gyroscopeBtn.isEnabled = true
+        WidgetTools.enable(button: calibrationBtn)
+        WidgetTools.enable(button: restBtn)
+        WidgetTools.enable(button: gyroscopeBtn)
     }
     
     
@@ -156,6 +150,9 @@ class MainViewController: UIViewController  {
     
         // 清空列表，避免出现异常
         devices = []
+
+        // 把按钮设置为不可用
+        WidgetTools.disable(button: bleSearchBtn)
 
         // 创建一个子线程，去检查可用的蓝牙设备
         Thread(target: self, selector: #selector(searchBLEDevices), object: nil).start()
@@ -174,7 +171,7 @@ class MainViewController: UIViewController  {
             Thread(target: self, selector: #selector(setupBLETunnels), object: nil).start()
                 
             // 在信道创建完成之前，不允许用户再点击按钮
-            disableConnectBtn()
+            WidgetTools.disable(button: connectBtn)
 
         case "Disconnect":
             // 停止alarm
@@ -190,50 +187,12 @@ class MainViewController: UIViewController  {
             disableAllFuncBtns()
             
             // 打开连结按钮
-            enableConnectBtn()
+            WidgetTools.enable(button: connectBtn)
 
         default:
             break
         }
     }
-    
-
-    // MARK: 展开菜单按钮，事件反馈
-    func showSelectableDevices(_ sender: UIButton) {
-        
-        if devices.count > 0 {
-            
-            // 获取可用设备的设备名
-            var deviceNames:[String] = []
-            for dev in devices {
-                deviceNames.append(dev.name!)
-            }
-            
-            ActionSheetStringPicker.show(withTitle: "可用蓝牙设备", rows: deviceNames, initialSelection: 0, doneBlock: { [self]
-                picker, indexes, values in
-
-                // for debug
-                print("values = \(String(describing: values))")
-                print("indexes = \(indexes)")
-                print("picker = \(String(describing: picker))")
-                
-                // 显示选择的内容
-                self.selectedDeviceLabel.text = "Device: " + String(describing: values!)
-                
-                // 设置蓝牙连结
-                if self.connectBLEDevice(index: indexes) {
-                    enableConnectBtn()
-                }
-
-                return
-            }, cancel: { ActionMultipleStringCancelBlock in return }, origin: sender)
-        
-        } else {  // 没有可用的设备列表，要求用户进行设备搜索
-            
-            RMessage.showNotification(withTitle: "蓝牙设备列表为空", subtitle: "未能可用的设备列表，请先完成搜索过程后再尝试!", type: .normal, customTypeName: nil, duration: 3, callback: nil)
-        }
-    }
-    
     
     // MARK: 休息
     @IBAction func restPressed(_ sender: UIButton) {
@@ -262,7 +221,38 @@ class MainViewController: UIViewController  {
         self.navigationController?.pushViewController(vc, animated: true)
         self.present(vc, animated: true, completion: nil)
     }
-    
+
+    // MARK: 蓝牙连结处理函数
+    func connectBLEDevice(index: Int) -> Bool {
+        
+        // 测试是否已有连结建立
+        if let _peripheral = self.peripheral {
+            // 蓝牙正在与远程设备连结
+            if bluetooth.isConnected(peripheral: _peripheral) {
+                bluetooth.disconnect(peripheral: _peripheral) // 断开连结
+            }
+        }
+        
+        // 记录当前被用户选定的蓝牙设备
+        self.peripheral = devices[index]
+        
+        // 设置选定的蓝牙设备
+        guard self.peripheral != nil else {
+            
+            // 连结失败，弹出错误信息
+            RMessage.showNotification(withTitle: "蓝牙设备连结失败", subtitle: "未能连结到蓝牙设备，请重新尝试!", type: .error, customTypeName: nil, duration: 3, callback: nil)
+            
+            // 错误中断
+            return false
+        }
+
+        // 建立连结中
+        return true
+    }
+}
+
+
+extension MainViewController {
     // MARK: 线程，查找BEL设备
     @objc func searchBLEDevices() {
         sleep(1)
@@ -285,10 +275,65 @@ class MainViewController: UIViewController  {
 
         // 弹出选择菜单
         DispatchQueue.main.async {
-            self.showSelectableDevices(self.bleSearchBtn)
+
+            let sender = self.bleSearchBtn
+
+            if self.devices.count > 0 {
+            
+                // 获取可用设备的设备名
+                var deviceNames:[String] = []
+                for dev in self.devices {
+                    deviceNames.append(dev.name!)
+                }
+            
+                ActionSheetStringPicker.show(withTitle: "可用蓝牙设备", rows: deviceNames, initialSelection: 0, doneBlock: { [self]
+                    picker, indexes, values in
+
+                    // for debug
+                    print("values = \(String(describing: values))")
+                    print("indexes = \(indexes)")
+                    print("picker = \(String(describing: picker))")
+                    
+                    // 显示选择的内容
+                    self.selectedDeviceLabel.text = "Device: " + String(describing: values!)
+                    
+                    // 设置蓝牙连结
+                    if self.connectBLEDevice(index: indexes) {
+                        WidgetTools.enable(button: connectBtn)
+                    }
+
+                    return
+                }, cancel: { ActionMultipleStringCancelBlock in return }, origin: sender)
+        
+            } else {  // 没有可用的设备列表，要求用户进行设备搜索
+            
+                RMessage.showNotification(withTitle: "蓝牙设备列表为空", subtitle: "未能可用的设备列表，请先完成搜索过程后再尝试!", type: .normal, customTypeName: nil, duration: 3, callback: nil)
+            }
+
+            // 把按钮重新设置为可用
+            WidgetTools.enable(button: self.bleSearchBtn)
         }
     }
     
+
+    // MARK: 线程，蓝牙消息处理函数
+    @objc func recv() {
+        let data = bluetooth.recvData()
+        if data != nil {
+            if let feedback = String(data: data!, encoding: .utf8) {
+                
+                // 将当前的文本粘贴到输出的文本后面
+                let trimstr = "Output:\n\t" + feedback.replacingOccurrences(of: "\r\n", with: "\n")
+                
+                // 更新数据
+                DispatchQueue.main.async {
+                    self.outputTextView.text = trimstr
+                }
+            }
+        }
+    }
+
+
     // MARK: 线程，尝试建立管道
     @objc func setupBLETunnels() {
         
@@ -317,7 +362,7 @@ class MainViewController: UIViewController  {
                     RMessage.showNotification(withTitle: "蓝牙设备连结失败", subtitle: "未能连结到设备，请重新尝试!", type: .error, customTypeName: nil, duration: 3, callback: nil)
                     
                     // 允许按钮可用
-                    self.enableConnectBtn()
+                    WidgetTools.enable(button: self.connectBtn)
                 }
                 
                 // 任务中断
@@ -348,7 +393,7 @@ class MainViewController: UIViewController  {
                 
                 // 修改按钮信息
                 self.connectBtn.setTitle("Disconnect", for: .normal)
-                self.enableConnectBtn()
+                WidgetTools.enable(button: self.connectBtn)
 
                 // 允许用户使用全部的按钮
                 self.enableAllFuncBtns()
@@ -363,57 +408,11 @@ class MainViewController: UIViewController  {
                 RMessage.showNotification(withTitle: "蓝牙设备连结失败", subtitle: "未能查找到可用的串口信号，请重新尝试!", type: .error, customTypeName: nil, duration: 3, callback: nil)
                 
                 // 修改按钮信息
-                self.enableConnectBtn()
-            }
-        }
-    }
-
-    // MARK: 蓝牙连结处理函数
-    func connectBLEDevice(index: Int) -> Bool {
-        
-        // 测试是否已有连结建立
-        if let _peripheral = self.peripheral {
-            // 蓝牙正在与远程设备连结
-            if bluetooth.isConnected(peripheral: _peripheral) {
-                bluetooth.disconnect(peripheral: _peripheral) // 断开连结
-            }
-        }
-        
-        // 记录当前被用户选定的蓝牙设备
-        self.peripheral = devices[index]
-        
-        // 设置选定的蓝牙设备
-        guard self.peripheral != nil else {
-            
-            // 连结失败，弹出错误信息
-            RMessage.showNotification(withTitle: "蓝牙设备连结失败", subtitle: "未能连结到蓝牙设备，请重新尝试!", type: .error, customTypeName: nil, duration: 3, callback: nil)
-            
-            // 错误中断
-            return false
-        }
-
-        // 建立连结中
-        return true
-    }
-
-    // MARK: 线程，蓝牙消息处理函数
-    @objc func recv() {
-        let data = bluetooth.recvData()
-        if data != nil {
-            if let feedback = String(data: data!, encoding: .utf8) {
-                
-                // 将当前的文本粘贴到输出的文本后面
-                let trimstr = "Output:\n\t" + feedback.replacingOccurrences(of: "\r\n", with: "\n")
-                
-                // 更新数据
-                DispatchQueue.main.async {
-                    self.outputTextView.text = trimstr
-                }
+                WidgetTools.enable(button: self.connectBtn)
             }
         }
     }
 }
-
 
 
 extension MainViewController: UITextFieldDelegate {

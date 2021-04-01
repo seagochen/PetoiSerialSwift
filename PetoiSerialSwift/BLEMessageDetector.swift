@@ -11,10 +11,12 @@ class BLEMessageDetector
 {
     private var millisecond: Int!
     private var timer : Timer?
+    private var running: Bool!
     
     // wake up the program every 100 milliseconds
     init(millisecond: Int = 100) {
         self.millisecond = millisecond
+        self.running = false
     }
     
     func startListen(target aTarget: Any, selector aSelector: Selector) {
@@ -26,6 +28,7 @@ class BLEMessageDetector
         
         // start timer
         timer?.fire()
+        running = true
     }
     
     func stopListen() {
@@ -33,5 +36,11 @@ class BLEMessageDetector
             timer!.invalidate()
             timer = nil
         }
+        
+        running = false
+    }
+    
+    func isRunning() -> Bool {
+        return running
     }
 }

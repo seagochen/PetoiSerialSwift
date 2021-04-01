@@ -10,6 +10,7 @@ import UIKit
 
 class WidgetTools
 {
+    // 添加下划线
     static func underline(label: UILabel)
     {
         if let text = label.text {
@@ -20,6 +21,19 @@ class WidgetTools
         }
     }
     
+    // 设置不可用
+    static func disable(button: UIButton) {
+        button.isEnabled = false
+        button.alpha = 0.4
+    }
+    
+    // 设置可用
+    static func enable(button: UIButton) {
+        button.isEnabled = true
+        button.alpha = 1.0
+    }
+    
+    // 添加下划线
     static func underline(textfield: UITextField, color: UIColor)
     {
         let underLine = UIView.init(frame: CGRect.init(x: 0, y: textfield.height - 2, width: textfield.width, height: 2))
@@ -28,6 +42,7 @@ class WidgetTools
         textfield.borderStyle = .none
     }
     
+    // 设置圆角矩形
     static func roundCorner(button: UIButton)
     {
         button.layer.borderWidth = 1
@@ -35,6 +50,7 @@ class WidgetTools
         button.layer.cornerRadius = 5
     }
     
+    // 设置圆角矩形
     static func roundCorner(textView: UITextView, boardColor: UIColor)
     {
         textView.layer.borderColor = ColorConverter.convert(color: boardColor)
@@ -43,8 +59,19 @@ class WidgetTools
         textView.layer.masksToBounds = true
     }
     
+    // 调整透明度
     static func transparent(textView: UITextView, alpha: Float32)
     {
         textView.layer.backgroundColor = ColorConverter.convert(color: UIColor.clear)
+    }
+    
+    // UI控件图层顺序调整
+    static func bringSubviewToFront(parent: UIView, child: UIView) {
+        parent.bringSubviewToFront(child)
+    }
+    
+    // UI控件图层顺序调整
+    static func sendSubviewToBack(parent: UIView, child: UIView) {
+        parent.sendSubviewToBack(child)
     }
 }
