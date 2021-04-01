@@ -42,4 +42,9 @@ class WidgetTools
         textView.layer.cornerRadius = 5
         textView.layer.masksToBounds = true
     }
+    
+    static func transparent(textView: UITextView, alpha: Float32)
+    {
+        textView.layer.backgroundColor = ColorConverter.convert(color: UIColor.clear)
+    }
 }

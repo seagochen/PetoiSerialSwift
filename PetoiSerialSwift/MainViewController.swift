@@ -13,23 +13,12 @@ import ActionSheetPicker_3_0
 
 class MainViewController: UIViewController  {
     
-    // 蓝牙设备管理类
-    var bluetooth: BluetoothLowEnergy!
-    
-    // 蓝牙BLE设备
-    var peripheral: CBPeripheral?
-    
-    // 发送数据接口
-    var txdChar: CBCharacteristic?
-    
-    // 接收数据接口
-    var rxdChar: CBCharacteristic?
-    
-    // 接收和发送蓝牙数据
-    var bleMsgHandler: BLEMessageDetector?
-    
-    // 设置蓝牙搜索的pickerview
-    var devices: [CBPeripheral]!
+    var bluetooth: BluetoothLowEnergy!  // 蓝牙设备管理类
+    var peripheral: CBPeripheral?  // 蓝牙BLE设备
+    var txdChar: CBCharacteristic?  // 发送数据接口
+    var rxdChar: CBCharacteristic?  // 接收数据接口
+    var bleMsgHandler: BLEMessageDetector?  // 接收和发送蓝牙数据
+    var devices: [CBPeripheral]!  // 设置蓝牙搜索的pickerview
     
     // 蓝牙输出文本缓冲
     var outputString: String = ""
@@ -44,7 +33,7 @@ class MainViewController: UIViewController  {
     @IBOutlet weak var connectBtn: UIButton!
     
     
-    
+    // MARK: view被创建后，初始化一些基础设置
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -52,55 +41,41 @@ class MainViewController: UIViewController  {
         initWidgets()
         
         // 对信道蓝牙相关通信做准备
-        initUtilities()
+        loadBleInformation()
     }
     
-    
+    // MARK: view即将被销毁前，把蓝牙设备信息存放回delegate，其实不用存放bluetooth，不过为了工整
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        let delegate = UIApplication.shared.delegate as! AppDelegate
-        
-        // 蓝牙设备管理类
-        delegate.bluetooth = bluetooth
-        
-        // 蓝牙BLE设备
-        delegate.peripheral = peripheral
-        
-        // 发送数据接口
-        delegate.txdChar = txdChar
-        
-        // 接收数据接口
-        delegate.rxdChar = rxdChar
-        
-        // 接收和发送蓝牙数据
-        delegate.bleMsgHandler = bleMsgHandler
-        
-        // 设置蓝牙搜索的pickerview
-        delegate.devices = devices
+        // save ble information to appdelegate
+        saveBleInformation()
     }
     
-    func initUtilities() {
+
+    // MARK：对蓝牙等设备初始化
+    func loadBleInformation() {
         
+        // 从AppDelegate获取存放在全局的蓝牙等外设信息
         let delegate = UIApplication.shared.delegate as! AppDelegate
         
-        // 蓝牙设备管理类
         bluetooth = delegate.bluetooth
-        
-        // 蓝牙BLE设备
         peripheral = delegate.peripheral
-        
-        // 发送数据接口
         txdChar = delegate.txdChar
-        
-        // 接收数据接口
         rxdChar = delegate.rxdChar
-        
-        // 接收和发送蓝牙数据
         bleMsgHandler = delegate.bleMsgHandler
-        
-        // 设置蓝牙搜索的pickerview
         devices = delegate.devices
+    }
+    
+    
+    func saveBleInformation() {
+        let delegate = UIApplication.shared.delegate as! AppDelegate
+        delegate.bluetooth = bluetooth
+        delegate.peripheral = peripheral
+        delegate.txdChar = txdChar
+        delegate.rxdChar = rxdChar
+        delegate.bleMsgHandler = bleMsgHandler
+        delegate.devices = devices
     }
     
     
@@ -136,6 +111,7 @@ class MainViewController: UIViewController  {
         WidgetTools.roundCorner(textView: outputTextView, boardColor: bleSearchBtn.backgroundColor!)
     }
     
+
     func disableConnectBtn() {
         connectBtn.isEnabled = false
         connectBtn.alpha = 0.4
@@ -266,24 +242,28 @@ class MainViewController: UIViewController  {
         bluetooth.sendData(data: Converter.cvtString(toData: "d"), peripheral: peripheral!, characteristic: txdChar!)
     }
     
-    // 陀螺仪
+    // MARK: 陀螺仪
     @IBAction func gyrosocopePressed(_ sender: UIButton) {
         outputString = ""
         
         bluetooth.sendData(data: Converter.cvtString(toData: "g"), peripheral: peripheral!, characteristic: txdChar!)
     }
     
-    
-    
-    @IBAction func showBtnPressed(_ sender: Any) {
-        
+    // MARK: 校准
+    @IBAction func calibrationBtnPressed(_ sender: Any) {
+        // 先发送一个c
+        bluetooth.sendData(data: Converter.cvtString(toData: "c"), peripheral: peripheral!, characteristic: txdChar!)
+
+        // 把蓝牙设备信息存储一下
+        saveBleInformation()
+
+        // 跳转到 CalibrationVC
         let vc = self.storyboard?.instantiateViewController(identifier: "CalibrationVC") as! CalibrationViewController
-        
         self.navigationController?.pushViewController(vc, animated: true)
         self.present(vc, animated: true, completion: nil)
     }
     
-
+    // MARK: 线程，查找BEL设备
     @objc func searchBLEDevices() {
         sleep(1)
 
@@ -309,8 +289,7 @@ class MainViewController: UIViewController  {
         }
     }
     
-    
-    // MARK: 尝试建立管道
+    // MARK: 线程，尝试建立管道
     @objc func setupBLETunnels() {
         
         for times in 1...10 {
@@ -388,7 +367,6 @@ class MainViewController: UIViewController  {
             }
         }
     }
-    
 
     // MARK: 蓝牙连结处理函数
     func connectBLEDevice(index: Int) -> Bool {
@@ -418,8 +396,7 @@ class MainViewController: UIViewController  {
         return true
     }
 
-
-    // MARK: 蓝牙消息处理函数
+    // MARK: 线程，蓝牙消息处理函数
     @objc func recv() {
         let data = bluetooth.recvData()
         if data != nil {
