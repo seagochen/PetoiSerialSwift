@@ -243,9 +243,9 @@
             // 然后将buffer中的剩余数据拷贝到0号位
             [self overallMove:tailer];
         }
-
-        [self.lock unlock];
     }
+    
+    [self.lock unlock];
 }
 
 
@@ -261,9 +261,10 @@
             
             return data;
         }
-        
-        [self.lock unlock];
     }
+    
+    [self.lock unlock];
+
     return nil;
 };
 

@@ -88,7 +88,23 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "DBC0045E-E496-4A2B-AA14-89BF72CD4A91"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PetoiSerialSwift/BLE/BLESignalStackHandler.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "219"
+            endingLineNumber = "219"
+            landmarkName = "recv()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4B4B440C-561D-4E94-9006-7B509C4EE8F4"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PetoiSerialSwift/BLE/BLESignalStackHandler.swift"
@@ -97,6 +113,54 @@
             startingLineNumber = "218"
             endingLineNumber = "218"
             landmarkName = "recv()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "4B4B440C-561D-4E94-9006-7B509C4EE8F4 - ef786c3630f6096b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "PetoiSerialSwift.BLESignalStackHandler.recv() -&gt; ()"
+                  moduleName = "PetoiSerialSwift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/orlando/Desktop/Repositories/Petoi/PetoiSerialSwift/PetoiSerialSwift/BLE/BLESignalStackHandler.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "217"
+                  endingLineNumber = "217"
+                  offsetFromSymbolStart = "1764">
+               </Location>
+               <Location
+                  uuid = "4B4B440C-561D-4E94-9006-7B509C4EE8F4 - ab90401c8e989f7e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in PetoiSerialSwift.BLESignalStackHandler.recv() -&gt; ()"
+                  moduleName = "PetoiSerialSwift"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/orlando/Desktop/Repositories/Petoi/PetoiSerialSwift/PetoiSerialSwift/BLE/BLESignalStackHandler.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "218"
+                  endingLineNumber = "218"
+                  offsetFromSymbolStart = "68">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "5E183E07-9897-4BBF-B91F-A38CC6F459A3"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PetoiSerialSwift/BLE/BLEPeripheralHandler.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "107"
+            endingLineNumber = "107"
+            landmarkName = "recvData()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

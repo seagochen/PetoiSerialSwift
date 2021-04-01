@@ -37,6 +37,7 @@ class BLESignalStackHandler:  NSObject {
         super.init()
         
         self.delegate = delegate
+        self.output = output
         
         // 对蓝牙设备进行初始化
         loadBleInformation()
