@@ -2,6 +2,8 @@
 //  BluetoothLowEnergyHandler.swift
 //  PetoiSerialSwift
 //
+// BLE设备管理器的实现
+//
 //  Created by Orlando Chen on 2021/3/23.
 //
 
@@ -11,17 +13,11 @@ import CoreBluetooth
 
 class BLEPeripheralHandler: NSObject {
     
-    // 一个蓝牙设备当中可能包含多个信道，一个UUID就是一个信道标记
-    var uuids: [CBCharacteristic] = []
     
-    // 中心对象
-    var central : CBCentralManager!
-    
-    // 把中心设备扫描的外置设备保存起来
-    var deviceList: [CBPeripheral] = []
-
-    // 接收到的数据
-    var peripheralData: Data?
+    var uuids: [CBCharacteristic] = []  // 一个蓝牙设备当中可能包含多个信道，一个UUID就是一个信道标记
+    var central : CBCentralManager!  // 中心对象
+    var deviceList: [CBPeripheral] = []  // 把中心设备扫描的外置设备保存起来
+    var peripheralData: Data?   // 接收到的数据
     
     // Objective Databuffer
     var buffer: DataBuffer!

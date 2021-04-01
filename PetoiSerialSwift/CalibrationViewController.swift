@@ -21,13 +21,8 @@ class CalibrationViewController: UIViewController {
     @IBOutlet weak var OKBtn: UIButton!
     @IBOutlet weak var outputTextView: UITextView!
     
-    
-    var bluetooth: BLEPeripheralHandler!  // 蓝牙设备管理类
-    var peripheral: CBPeripheral?  // 蓝牙BLE设备
-    var txdChar: CBCharacteristic?  // 发送数据接口
-    var rxdChar: CBCharacteristic?  // 接收数据接口
-    var bleMsgHandler: BLEMessageDetector?  // 接收和发送蓝牙数据
-    var devices: [CBPeripheral]!  // 设置蓝牙搜索的pickerview
+    // ble 消息栈
+    var bleHelper: BLESignalStackHandler!
 
     // 需要调整的舵机号，默认0号舵机
     var selectedServo = 0
@@ -41,55 +36,8 @@ class CalibrationViewController: UIViewController {
         initWidgets()
         
         // 对信道蓝牙相关通信做准备
-        loadBleInformation()
-    }
-    
-    // MARK: view即将被销毁前，把蓝牙设备信息存放回delegate，其实不用存放bluetooth，不过为了工整
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        saveBleInformation()
-    }
-    
-    
-    // MARK: 对蓝牙等设备初始化
-    func loadBleInformation() {
-        
-        // 从AppDelegate获取存放在全局的蓝牙等外设信息
         let delegate = UIApplication.shared.delegate as! AppDelegate
-        
-        bluetooth = delegate.bluetooth
-        peripheral = delegate.peripheral
-        txdChar = delegate.txdChar
-        rxdChar = delegate.rxdChar
-        bleMsgHandler = delegate.bleMsgHandler
-        devices = delegate.devices
-        
-        // 是否有在处理蓝牙消息
-        if let handler = bleMsgHandler {
-            if !handler.isRunning() { // 没有运行
-                handler.startListen(target: self, selector: #selector(self.recv))
-            }
-        }
-    }
-    
-    // MARK: 存储蓝牙设备信息
-    func saveBleInformation() {
-        
-        // 准备把蓝牙外设的信息存入到AppDelegate里
-        let delegate = UIApplication.shared.delegate as! AppDelegate
-        
-        delegate.bluetooth = bluetooth
-        delegate.peripheral = peripheral
-        delegate.txdChar = txdChar
-        delegate.rxdChar = rxdChar
-        delegate.bleMsgHandler = bleMsgHandler
-        delegate.devices = devices
-        
-        if let handler = bleMsgHandler {
-            if handler.isRunning() { // 暂停对蓝牙消息的处理
-                bleMsgHandler?.stopListen()
-            }
-        }
+        bleHelper = BLESignalStackHandler(output: outputTextView, delegate: delegate)
     }
     
     
@@ -123,8 +71,8 @@ class CalibrationViewController: UIViewController {
     
     // MARK: 不干什么事，主要在用户点击OK按钮后退出当前的界面，回到上级界面
     @IBAction func OKBtnPressed(_ sender: UIButton) {
-        bluetooth.sendData(data: Converter.cvtString(toData: "d"), peripheral: peripheral!, characteristic: txdChar!)
         
+        bleHelper.sendCmdViaSerial(cmd: "d")
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -159,26 +107,11 @@ class CalibrationViewController: UIViewController {
     
     // MARK:
     @IBAction func clearBtnPressed(_ sender: Any) {
+        bleHelper.sendCmdViaSerial(cmd: "c")
     }
     
     // MARK:
     @IBAction func saveBtnPressed(_ sender: Any) {
-    }
-    
-    // MARK: 线程，蓝牙消息处理函数
-    @objc func recv() {
-        let data = bluetooth.recvData()
-        if data != nil {
-            if let feedback = String(data: data!, encoding: .utf8) {
-                
-                // 将当前的文本粘贴到输出的文本后面
-                let trimstr = "Output:\n\t" + feedback.replacingOccurrences(of: "\r\n", with: "\n")
-                
-                // 更新数据
-                DispatchQueue.main.async {
-                    self.outputTextView.text = trimstr
-                }
-            }
-        }
+        bleHelper.sendCmdViaSerial(cmd: "s")
     }
 }

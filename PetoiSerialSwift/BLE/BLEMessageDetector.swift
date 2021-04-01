@@ -2,6 +2,8 @@
 //  Detector.swift
 //  PetoiSerialSwift
 //
+// 后台线程，专门用于接收来自蓝牙的数据，轮询间隔默认为100ms
+//
 //  Created by Orlando Chen on 2021/3/29.
 //
 

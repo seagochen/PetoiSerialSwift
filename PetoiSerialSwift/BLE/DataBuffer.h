@@ -21,22 +21,20 @@
 // MARK: 解构函数
 - (void)dealloc;
 
-// MARK: 给buffer增加数据
+// MARK: 新增数据至缓存
 - (void)appendData: (NSData*)data;
 
-// MARK: 获取存储数据缓存的指针
+// MARK: 获取缓存的指针
 - (NSData*)getBuffer;
 
-// MARK: 获取存储数据缓存的大小
+// MARK: 获取缓存的大小
 - (NSInteger)getBufferSize;
 
-// MARK: 存储数据缓存还可以使用的有效空间
+// MARK: 缓存剩余有效空间
 - (NSInteger)getRestSize;
 
 // MARK: 尝试从缓存中读取可用的数据
 - (NSData*)tryGetToken;
-
-
 
 @end
 

@@ -192,35 +192,61 @@
 }
 
 
+- (void)print: (NSData*)data
+{
+    if ([data length] > 0) {
+        NSInteger len = 0;
+        unsigned char* buf = [Converter cvtDataToCBytes:data length:&len];
+        
+        for (int i = 0; i < len; i++) {
+            if (buf[i] >= 32 && buf[i] < 127) {
+                printf("%c ", buf[i]);
+            } else {
+                printf("%d ", buf[i]);
+            }
+        }
+        printf("\n");
+    }
+};
+
+
 - (void)appendData: (NSData*)data
 {
     if (! [self isString:data]) return;
+
+    printf("----------------data------------------\n");
+    [self print: data];
+    printf("--------------------------------------\n");
     
     if ([self.lock tryLock])
     {
         // 将数据写入缓冲
         [self writeToBuffer:data];
-        
+
         // 持续扫描，直到返回的数值为 -1
         while (true) {
             // 从数据中抓取token结尾，这里的结尾定义默认为\r\n
             NSInteger tailer = [self nextTokenStartPos];
-            
+
             if (tailer == -1) break;
-            
+
             // 找到了完整的数据位，将数据从buffer中拷贝出来
             NSData* token = [Converter cvtCBytesToData:self.buffer length:tailer];
-            
+
+            printf("---------------token------------------\n");
+            [self print: token];
+            printf("--------------------------------------\n");
+
             // 把数据写入MutableArray
             [self.tokens addObject:token];
-            
+
             // 然后将buffer中的剩余数据拷贝到0号位
             [self overallMove:tailer];
         }
-        
+
         [self.lock unlock];
     }
-};
+}
 
 
 - (NSData*)tryGetToken
