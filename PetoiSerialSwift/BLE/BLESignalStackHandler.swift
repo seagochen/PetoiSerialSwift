@@ -32,12 +32,15 @@ class BLESignalStackHandler:  NSObject {
     private var success: DoneClosure?
     private var failure: DoneClosure?
     
+    private var buffer: StringBuffer!
+    
     
     init(output: UITextView, delegate: AppDelegate) {
         super.init()
         
         self.delegate = delegate
         self.output = output
+        self.buffer = StringBuffer()
         
         // 对蓝牙设备进行初始化
         loadBleInformation()
@@ -46,6 +49,9 @@ class BLESignalStackHandler:  NSObject {
     deinit {
         // 销毁前，把现有的蓝牙设备状态及相关信息存储回delegate
         saveBleInformation()
+        
+        // 销毁不需要的数据资源
+        self.buffer = nil
     }
     
     
@@ -170,6 +176,7 @@ class BLESignalStackHandler:  NSObject {
         Thread(target: self, selector: #selector(setupBLETunnels), object: nil).start()
     }
     
+    
     // MARK: 断开与设备之间的连结
     func disconnectPeripheral(success: DoneClosure) {
         if peripheral != nil {
@@ -192,6 +199,7 @@ extension BLESignalStackHandler {
     }
 
     func sendCmdViaSerial(cmd: String) {
+        bluetooth.sendData(data: Converter.cvtString(toData: cmd), peripheral: self.peripheral!, characteristic: self.txdChar!)
         // TODO
     }
 
@@ -212,11 +220,15 @@ extension BLESignalStackHandler {
             if let feedback = String(data: data!, encoding: .utf8) {
                 
                 // 将当前的文本粘贴到输出的文本后面
-                let trimstr = "Output:\n\t" + feedback.replacingOccurrences(of: "\r\n", with: "\n")
+                buffer.push(feedback.replacingOccurrences(of: "\r\n", with: "\n"))
                 
                 // 更新数据
                 DispatchQueue.main.async {
-                    self.output.text = trimstr
+                    if self.buffer.size() > 10 {
+                        self.output.text = "Output:\n\t" + self.buffer.batchStr(true)
+                    } else {
+                        self.output.text = "Output:\n\t" + self.buffer.batchStr(false)
+                    }
                 }
             }
         }
@@ -282,6 +294,9 @@ extension BLESignalStackHandler {
                 
                 // 恢复按键
                 self.success!()
+                
+                // 清空全部的数据
+                self.bluetooth.clearBuffer()
             }
             
         } else {

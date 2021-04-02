@@ -4,3 +4,4 @@
 
 #import "Converter.h"
 #import "DataBuffer.h"
+#import "StringBuffer.h"

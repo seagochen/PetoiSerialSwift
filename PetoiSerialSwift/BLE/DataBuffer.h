@@ -10,7 +10,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface DataBuffer : NSObject
+@interface DataBuffer: NSObject
 
 // MARK: 构造函数
 - (id)init;
@@ -30,11 +30,20 @@
 // MARK: 获取缓存的大小
 - (NSInteger)getBufferSize;
 
+// MARK: 获取可用的token数
+- (NSInteger)getTokenSize;
+
+// MARK: 清空操作s
+- (void)empty;
+
 // MARK: 缓存剩余有效空间
 - (NSInteger)getRestSize;
 
 // MARK: 尝试从缓存中读取可用的数据
 - (NSData*)tryGetToken;
+
+// MARK: 测试打印
+- (void)print: (NSData*)data;
 
 @end
 

@@ -104,12 +104,18 @@ class BLEPeripheralHandler: NSObject {
 
     // MARK: 5.2. 接收数据
     func recvData() -> Data? {
+        let size = buffer.getTokenSize()
         return buffer.tryGetToken()
     }
     
     // MARK: 6. 断开连结
     func disconnect(peripheral: CBPeripheral) {
         central?.cancelPeripheralConnection(peripheral)
+    }
+    
+    // MARK: 7. 清空
+    func clearBuffer() {
+        buffer.empty()
     }
 }
 

@@ -20,7 +20,6 @@
 
 @implementation DataBuffer
 
-
 - (id)init
 {
     if (self = [super init]) {
@@ -55,6 +54,7 @@
         // release objc objects
         self.buffer = nil;
         self.lock = nil;
+        self.tokens = nil;
     }
 };
 
@@ -199,16 +199,57 @@
         unsigned char* buf = [Converter cvtDataToCBytes:data length:&len];
         
         for (int i = 0; i < len; i++) {
+            //unsigned char debug = buf[i];
+            
             if (buf[i] >= 32 && buf[i] < 127) {
                 printf("%c ", buf[i]);
             } else {
-                printf("%d ", buf[i]);
+                switch (buf[i]) {
+                    case 0:
+                        printf("\\0");
+                        break;
+                        
+                    case 9: // blank
+                        printf("\\t "); // horizontal tab
+                        break;
+                    
+                    case 10:
+                        printf("\\n "); // new line
+                        break;
+                    
+                    case 11:
+                        printf("\\v "); // vertical tab
+                        break;
+                        
+                    case 12:
+                        printf("\\f "); // new page
+                        break;
+                        
+                    case 13:
+                        printf("\\r "); // carriage return
+                        break;
+                        
+                    default:
+                        printf("%d ", buf[i]);
+                        break;
+                }
             }
         }
         printf("\n");
     }
 };
 
+
+- (NSInteger)getTokenSize {
+    return [self.tokens count];
+}
+
+
+// MARK: 清空操作s
+- (void)empty {
+    [self.tokens removeAllObjects];
+    [self realloc:self.capacity];
+};
 
 - (void)appendData: (NSData*)data
 {
@@ -238,7 +279,8 @@
             printf("--------------------------------------\n");
 
             // 把数据写入MutableArray
-            [self.tokens addObject:token];
+            [self.tokens insertObject:token atIndex:0];
+//            [self.tokens addObject:token];
 
             // 然后将buffer中的剩余数据拷贝到0号位
             [self overallMove:tailer];
@@ -254,11 +296,10 @@
     if ([self.lock tryLock]) {
         
         if ([self.tokens count] > 0) {
-            NSData* data = [self.tokens objectAtIndex: 0];
-            [self.tokens removeObjectAtIndex: 0];
+            NSData* data = [self.tokens lastObject];
+            [self.tokens removeLastObject];
             
             [self.lock unlock];
-            
             return data;
         }
     }
